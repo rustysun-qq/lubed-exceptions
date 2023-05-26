@@ -1,0 +1,19 @@
+{
+    "name":"lubed/exceptions",
+    "type": "project",
+    "license": "proprietary",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=8.0",
+        "ext-json": "*",
+        "lubed/utils": "dev-main",
+        "lubed/supports": "dev-main"
+    },
+    "config": {
+    },
+    "autoload": {
+        "psr-4": {
+            "Lubed\\Exceptions\\": "src/"
+        }
+    }
+}

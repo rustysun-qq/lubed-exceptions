@@ -6,8 +6,6 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Traversable;
-use UnexpectedValueException;
-use Lubed\Utils\ErrCode;
 
 class FrameCollection implements ArrayAccess,IteratorAggregate,Countable
 {

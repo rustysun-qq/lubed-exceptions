@@ -6,7 +6,6 @@
     "require": {
         "php": ">=8.0",
         "ext-json": "*",
-        "lubed/utils": "dev-main",
         "lubed/supports": "dev-main"
     },
     "config": {

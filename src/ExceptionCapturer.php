@@ -1,6 +1,7 @@
 <?php
 namespace Lubed\Exceptions;
 use Closure;
+use Error;
 
 class ExceptionCapturer {
     //handler
@@ -36,19 +37,22 @@ class ExceptionCapturer {
         if ($level & error_reporting()) {
             $options = ['level'=>$level, 'file'=>$file, 'line'=>$line];
             $exception = new SysException($message, $options);
-
             if ($this->throwable) {
                throw $exception;
             }
-
             $this->handleException($exception);
             return true;
         }
-
         return false;
     }
 
     public function handleException($exception) {
+        //capture Error exception
+        if($exception instanceof Error){
+            $this->throwable = false;
+            $this->handleError(E_ERROR,$exception->getMessage(),$exception->getFile(),$exception->getLine());
+            return;
+        }
         $code=$exception->getCode();
         $msg=$exception->getMessage();
         $inspector=$this->getInspector($exception);
@@ -58,7 +62,6 @@ class ExceptionCapturer {
             if (!$handler instanceof ExceptionHandler) {
                 continue;
             }
-
             $handler->setInspector($inspector);
             $handler->setException($exception);
             $handler->setInvoker($this->callback);
@@ -73,8 +76,10 @@ class ExceptionCapturer {
     public function handleShutdown() {
         $this->throwable=false;
         $error=error_get_last();
+
         if ($error && $this->isLevelFatal($error['type'])) {
-            $this->handleError($error['type'], $error['message'], $error['file'], $error['line']);
+            $this->handleError($error['type'], $error['message'], 
+                $error['file'], $error['line']);
         }
     }
 

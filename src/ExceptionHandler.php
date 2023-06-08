@@ -22,6 +22,10 @@ class ExceptionHandler {
         $exception = $inspector->getException();
         //NOT BIZ EXCEPTION
         if (!$exception instanceof BizException) {
+            $options=method_exists($exception,'getOptions')?$exception->getOptions():[
+                'file'=>rtrim(basename($exception->getFile()),'.php'),
+                'line'=>$exception->getLine()
+            ];
             $vars = [
                 "title"           => 'Whoops! There was an error.',
                 "name"            => explode("\\", $inspector->getExceptionName()),
@@ -32,9 +36,8 @@ class ExceptionHandler {
                 "has_frames"      => !!count($frames),
                 "handler"         => $this,
                 "handlers"        => $inspector->getHandlers(),
-                //
-                'class'=>trim(basename($exception->getFile()),'.php'),
-                'line' => $exception->getLine()
+                'class' => get_class($exception),
+                'options' => $options
             ];
             $result = new DefaultExceptionResult($vars);
             if($this->invoker){

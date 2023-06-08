@@ -1,24 +1,17 @@
 <?php
 namespace Lubed\Exceptions;
 
-use Error;
-use Exception;
 use Closure;
 use Lubed\Supports\Starter;
-use Lubed\Utils\Config;
-use Lubed\Http\Streams\InputStream;
-use Lubed\Http\Request as HttpRequest;
-use Lubed\Http\Uri;
-use Lubed\Exceptions\ExceptionResult;
 
 final class DefaultStarter implements Starter
 {
     private array $config;
     private Closure $render;
 
-    public function __construct(array $config,Closure $render)
+    public function __construct(?array $config,Closure $render)
     {
-        $this->config = $config;
+        $this->config = NULL===$config?[]:$config;
         $this->render = $render;
     }
 
@@ -29,7 +22,6 @@ final class DefaultStarter implements Starter
 
         if (false === class_exists($capturer_class)||false === class_exists($handler_class)) {
             Exceptions::StartFailed('start exception capturer failed',[
-                'class'=>__CLASS__,
                 'method'=>__METHOD__
             ]);
         }
